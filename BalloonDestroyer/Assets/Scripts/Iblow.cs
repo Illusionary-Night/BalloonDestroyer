@@ -1,6 +1,6 @@
 using UnityEngine;
 
-interface Iblow
+public interface Iblow
 {
     public bool move();
 }
