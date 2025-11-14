@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using NUnit.Framework;
 using UnityEngine;
 
 public enum Terrain
@@ -17,23 +18,30 @@ public enum Direction
 }
 public class GM : MonoBehaviour
 {
+    public const int MAXMAPXLENGTH = 64;
+    public const int MAXMAPYLENGTH = 36;
     //[SerializeField]
-    public Terrain[,] TerrainMap = new Terrain[10, 10];
-    public Direction NowDirection= Direction.NULL;
-    public List<Iblow> ObjectList = new List<Iblow>();
+    public Terrain[,] TerrainMap = new Terrain[MAXMAPXLENGTH, MAXMAPYLENGTH];
+    [SerializeField]public List<Iblown> BlownList = new List<Iblown>();
+    [SerializeField]public List<Iblow>BlowList = new List<Iblow>();
+    public Direction[,] WindMap = new Direction[MAXMAPXLENGTH, MAXMAPYLENGTH];
+    public bool CanChangeWind;
+    public WorldWind worldWind;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         Initialize();
+        GameLoop();
     }
 
     // Update is called once per frame
     void Update()
     {
-        GetKey();
     }
     void Initialize()
     {
+        CanChangeWind = true;
+        worldWind = new WorldWind();
         
     }
     void GameLoop()
@@ -42,6 +50,7 @@ public class GM : MonoBehaviour
         while (true)
         {
             GetKey();
+            Blow();
             Move();
         }
     }
@@ -51,12 +60,13 @@ public class GM : MonoBehaviour
         while (true)
         {
             isDone = true;
-            foreach (var eachObject in ObjectList)
+            foreach (var eachObject in BlownList)
             {
                 isDone = isDone && eachObject.move();
             }
             if (isDone) break;
         }
+        CanChangeWind = true;
     }
     void EndGame()
     {
@@ -64,21 +74,39 @@ public class GM : MonoBehaviour
     }
     void GetKey()
     {
+        Direction direction = worldWind.GetDirection();
+        if (!CanChangeWind) return;
         if (Input.GetKeyDown(KeyCode.W))
         {
-            NowDirection = Direction.UP;
+            direction = Direction.UP;
+            CanChangeWind = false;
         }
         if (Input.GetKeyDown(KeyCode.A))
         {
-            NowDirection = Direction.LEFT;
+            direction = Direction.LEFT;
+            CanChangeWind = false;
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
-            NowDirection = Direction.DOWN;
+            direction = Direction.DOWN;
+            CanChangeWind = false;
         }
         if (Input.GetKeyDown(KeyCode.D))
         {
-            NowDirection = Direction.RIGHT;
+            direction = Direction.RIGHT;
+            CanChangeWind = false;
         }
+        worldWind.SetDirection(direction);
+    }
+    void Blow()
+    {
+        foreach(var eachObject in BlowList)
+        {
+            eachObject.Blow(WindMap);
+        }
+    }
+    void InitializeBlower() //blower的優先度排序初始化 由低排到高
+    {
+        BlowList.Sort((a, b) => a.GetPriority().CompareTo(b.GetPriority()));
     }
 }
