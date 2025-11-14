@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic; // 【新增】為了使用 List
 using System.Linq; // 【新增】為了使用 .All() 和 .OrderBy()
-using System.Collections; // (我們暫時不用協程，來貼合您的架構)
+using UnityEngine.InputSystem;
+
 
 public enum Terrain
 {
@@ -26,9 +27,9 @@ public enum GameState
     GameEnd         // 遊戲結束
 }
 
-public class GM : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
-    public static GM Instance { get; private set; }
+    public static GameManager Instance { get; private set; }
     public Terrain[,] TerrainMap = new Terrain[10, 10];
 
     public GameState currentState;
@@ -71,7 +72,7 @@ public class GM : MonoBehaviour
         // TODO 載入關卡編輯器的 Tilemap
 
         // 找場上所有實作了 Iblow 介面的物件儲存起來
-        movableObjects = FindObjectsOfType<MonoBehaviour>().OfType<IBlowable>().ToList();
+        movableObjects = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).OfType<IBlowable>().ToList();
 
         // 根據優先級排序 (帆船 > 氣球)
         movableObjects = movableObjects.OrderByDescending(obj => obj.GetPriority()).ToList();
@@ -83,11 +84,12 @@ public class GM : MonoBehaviour
     void GetKey()
     {
         direction selectedDirection = direction.NONE;
+        var keyboard = Keyboard.current;
 
-        if (Input.GetKeyDown(KeyCode.UpArrow)) selectedDirection = direction.UP;
-        else if (Input.GetKeyDown(KeyCode.DownArrow)) selectedDirection = direction.DOWN;
-        else if (Input.GetKeyDown(KeyCode.LeftArrow)) selectedDirection = direction.LEFT;
-        else if (Input.GetKeyDown(KeyCode.RightArrow)) selectedDirection = direction.RIGHT;
+        if (keyboard.upArrowKey.wasPressedThisFrame) selectedDirection = direction.UP;
+        else if (keyboard.downArrowKey.wasPressedThisFrame) selectedDirection = direction.DOWN;
+        else if (keyboard.leftArrowKey.wasPressedThisFrame) selectedDirection = direction.LEFT;
+        else if (keyboard.rightArrowKey.wasPressedThisFrame) selectedDirection = direction.RIGHT;
 
         // 如果玩家按下了有效按鍵
         if (selectedDirection != direction.NONE)

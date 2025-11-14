@@ -35,7 +35,7 @@ public class Balloon : MonoBehaviour, IBlowable
             Collider2D[] cols = Physics2D.OverlapPointAll(transform.position);
             foreach (var c in cols)
             {
-                if (c.GetComponent<Goal>() != null) { GM.Instance.EndGame(true); isMoving = false; yield break; }
+                if (c.GetComponent<Goal>() != null) { GameManager.Instance.EndGame(true); isMoving = false; yield break; }
             }
 
             yield return null;
