@@ -5,7 +5,13 @@ public enum Terrain
     Grass,
     Water
 }
-public enum 
+public enum direction
+{
+    UP, 
+    DOWN,
+    LEFT, 
+    RIGHT
+}
 public class GM : MonoBehaviour
 {
     //[SerializeField]
