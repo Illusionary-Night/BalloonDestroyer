@@ -10,8 +10,9 @@ public class Boat : MonoBehaviour, IBlowable
     [SerializeField] float speed = 3f;
     [SerializeField] LayerMask obstacleMask; // 指定 Rocks, Fans, Boats 所在 Layer
     bool isMoving = false;
-
+    bool isNeedle = false;
     public bool IsMoving() => isMoving;
+    public bool IsNeedle() => isNeedle;
     public int GetPriority() => 1;
     private void Awake()
     {
@@ -24,6 +25,7 @@ public class Boat : MonoBehaviour, IBlowable
             //terrainMap = GameObject.Find("Water_Map").GetComponent<Tilemap>();
         }
         if (IsMoving()) return;
+        if (IsNeedle()) return;
         Vector2 dir = MovementHelper.directionToVector(finalWinddirection);
         if (dir == Vector2.zero) return;
         StartCoroutine(MoveAlongWind(dir));
@@ -44,7 +46,12 @@ public class Boat : MonoBehaviour, IBlowable
                 yield return null;
             }
             transform.position = target;
-
+            // 抵達該格後檢查是否碰到 Goal
+            Collider2D[] cols = Physics2D.OverlapPointAll(transform.position);
+            foreach (var c in cols)
+            {
+                if (c.GetComponent<Needle>() != null) { isMoving = false; isNeedle = true; yield break; }
+            }
             yield return null;
         }
         isMoving = false;
