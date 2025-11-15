@@ -12,7 +12,8 @@ public enum TilemapType
 {
     ObjectMap,
     ObstacleMap,
-    TerrainMap
+    TerrainMap,
+    WaterMap
 }
 public class LevelGenerator : MonoBehaviour
 {
@@ -83,6 +84,10 @@ public class LevelGenerator : MonoBehaviour
             case TilemapType.TerrainMap:
                 tilemap = level.transform.Find("Terrain_Map")?.GetComponent<Tilemap>();
                 break;
+            case TilemapType.WaterMap:
+                tilemap = level.transform.Find("Water_Map")?.GetComponent<Tilemap>();
+                break;
+
         }
         if (tilemap == null)
         {

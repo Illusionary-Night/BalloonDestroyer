@@ -44,12 +44,14 @@ public class Boat : MonoBehaviour, IBlowable
         }
         isMoving = false;
     }
-    private bool CondiconditionMet(Vector2 dir)
+    private bool CondiconditionMet(direction dir)
     {
-        Sprite WhatIsAtForward = terrainMap.GetSprite(terrainMap.WorldToCell(transform.position + new Vector3(dir.x, dir.y, 0)));
-        if (WhatIsAtForward != Water_0) return false;
+        Tilemap tilemap = LevelGenerator.Instance.GetTilemap(TilemapType.WaterMap);
+        Vector3Int tarPos = tilemap.WorldToCell(transform.position + MovementHelper.directionToVector(dir));
+        TileBase[,] tileBase = LevelGenerator.Instance.GetMapData(TilemapType.WaterMap);
+        if (tileBase[tarPos.x,tarPos.y] == null)return false;
         // 檢查前方一格是否被阻擋
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 1f, obstacleMask);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, (Vector2)MovementHelper.directionToVector(dir), 1f, obstacleMask);
         if (hit.collider != null) return false;
         return true;
     }
