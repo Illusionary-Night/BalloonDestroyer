@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.InputSystem;
+using UnityEngine.Tilemaps;
 
 
 public enum Terrain
@@ -37,7 +38,7 @@ public class GameManager : MonoBehaviour
     private List<IBlowable> movableObjects = new List<IBlowable>(); // 儲存所有可動物件
     private direction currentWind = direction.NONE; // 玩家選擇的風向
 
-    private List<IBlower> BlowerObjects = new List<IBlower>(); // 儲存所有可吹物件
+    private List<IBlower> blowerObjects = new List<IBlower>(); // 儲存所有可吹物件
 
 
     void Awake()
@@ -107,6 +108,9 @@ public class GameManager : MonoBehaviour
         // 根據優先級排序 (帆船 > 氣球)
         movableObjects = movableObjects.OrderByDescending(obj => obj.GetPriority()).ToList();
 
+        //可吹物件初始化
+        blowerObjects = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).OfType<IBlower>().ToList();
+
         // 遊戲開始 玩家開始回合
         currentState = GameState.PlayerTurn;
     }
@@ -140,20 +144,22 @@ public class GameManager : MonoBehaviour
             // 檢查這個物件的位置是否在風扇影響範圍內
             // True 則使用風扇的風向覆蓋 finalWind = CalculateWindFor(obj.position, currentWind)
             // False 則使用全域風向
-            MonoBehaviour monoobj = obj as MonoBehaviour;
+
             direction influencedDirection = direction.NONE;
-            foreach (var blower in BlowerObjects)
+            //Debug.Log("count Fan: " + blowerObjects.Count);
+            foreach (var blower in blowerObjects)
             {
-                if (blower.PositionIsInfluenced(monoobj.transform.position)) //要改world to cell
+                if (blower.PositionIsInfluenced(obj.GetPosition())) 
                 {
-                    Debug.LogWarning("要改world to cell");
                     influencedDirection = blower.GetWindDirection();
+                    Debug.Log("changeWind: " + influencedDirection);
                 }
             }
 
             if(influencedDirection == direction.NONE) finalWind = currentWind; // 用全域風向
-
+            else finalWind = influencedDirection;
             // 命令物件開始移動
+            //Debug.Log("finalWind: " + finalWind);
             obj.StartMove(finalWind);
         }
     }
