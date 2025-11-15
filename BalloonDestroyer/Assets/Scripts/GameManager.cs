@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
     private List<IBlowable> movableObjects = new List<IBlowable>(); // 儲存所有可動物件
     private direction currentWind = direction.NONE; // 玩家選擇的風向
 
+    private List<IBlower> BlowerObjects = new List<IBlower>(); // 儲存所有可吹物件
 
 
     void Awake()
@@ -134,14 +135,23 @@ public class GameManager : MonoBehaviour
         // 迴圈遍歷所有可動物件 (因為已排序，帆船會先動)
         foreach (var obj in movableObjects)
         {
-            // foreach (var)
+            direction finalWind = direction.NONE;
             // TODO 加入「風扇覆蓋」的檢查邏輯
             // 檢查這個物件的位置是否在風扇影響範圍內
             // True 則使用風扇的風向覆蓋 finalWind = CalculateWindFor(obj.position, currentWind)
             // False 則使用全域風向
+            MonoBehaviour monoobj = obj as MonoBehaviour;
+            direction influencedDirection = direction.NONE;
+            foreach (var blower in BlowerObjects)
+            {
+                if (blower.PositionIsInfluenced(monoobj.transform.position)) //要改world to cell
+                {
+                    Debug.LogWarning("要改world to cell");
+                    influencedDirection = blower.GetWindDirection();
+                }
+            }
 
-
-            direction finalWind = currentWind; // 暫時先用全域風向
+            if(influencedDirection == direction.NONE) finalWind = currentWind; // 用全域風向
 
             // 命令物件開始移動
             obj.StartMove(finalWind);

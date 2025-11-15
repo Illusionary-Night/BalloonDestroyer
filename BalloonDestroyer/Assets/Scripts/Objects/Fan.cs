@@ -1,37 +1,44 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 
-public class fan : MonoBehaviour
+public class fan : MonoBehaviour, IBlower
 {
     direction direction;
-    Vector2Int position;
-    public int GetPriority()
+    int windStrength;
+    public void SetWindStrength(int strength)
     {
-        return 2;
+        if(windStrength < 0)
+        {
+            Debug.Log("windStrengthError");
+            return;
+        }
+        windStrength = strength;
     }
-    public void Blow(direction[,] windMap)
+    public int GetWindStrength()
     {
-        if (windMap == null) return;
-        if (direction == direction.UP)
-        {
-            for (int y = position.y; y < windMap.GetLength(1); y++) windMap[position.x, y] = direction.UP;
-        }
-        else if (direction == direction.DOWN)
-        {
-            for (int y = position.y; y >= 0; y--) windMap[position.x, y] = direction.DOWN;
-        }
-        else if (direction == direction.RIGHT)
-        {
-            for (int x = position.x; x < windMap.GetLength(0); x++) windMap[x, position.y] = direction.RIGHT;
-        }
-        else if (direction == direction.LEFT)
-        {
-            for (int x = position.x; x >= windMap.GetLength(0); x--) windMap[x, position.y] = direction.LEFT;
-        }
-        else
-        {
-            Debug.Log("fan direction error");
-        }
+        return windStrength;
     }
+    public bool PositionIsInfluenced(Vector2 targetpos)
+    {
+        //Vector2Int delta = MovementHelper.directionToVector(direction);
+        //Vector2 fanpos = LevelGenerator.Instance.GetMapData(TilemapType.ObjectMap)[0,0].WorldToCell(transform.position);
+        //Vector2 tmppos = new Vector2();
+        //tmppos = fanpos;
+        //for(int i =1; i < windStrength; i++)
+        //{
+        //    tmppos += delta;
+        //    if (tmppos==targetpos)
+        //    {
+        //        return true;
+        //    }
+        //}
+        return false;
+    }
+    public direction GetWindDirection()
+    {
+        return direction;
+    }
+
 }
