@@ -1,13 +1,23 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Trigger : MonoBehaviour
 {
-    [SerializeField] Gear gear;
+    [SerializeField] List<Gear> gears;
+    [SerializeField] List<Fan> fans;
     public void Triggered()
     {
         Debug.Log("Triggered");
-        if (gear == null) return;
-        gear.Activate();
+        foreach (Gear gear in gears)
+        {
+            if (gear == null) continue; 
+            gear.Activate();
+        }
+        foreach (Fan fan in fans)
+        {
+            if (fan == null) continue;
+            fan.TurnOff();
+        }
         Destroy(gameObject);
     }
 }

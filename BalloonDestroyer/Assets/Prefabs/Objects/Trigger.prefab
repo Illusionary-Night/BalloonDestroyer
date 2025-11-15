@@ -104,7 +104,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f82dd4df60a512148a850c13cfc26dca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Trigger
-  gear: {fileID: 0}
+  gears: []
+  fans: []
 --- !u!61 &4566500950455091146
 BoxCollider2D:
   m_ObjectHideFlags: 0

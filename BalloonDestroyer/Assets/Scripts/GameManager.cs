@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 
 
 public enum Terrain
@@ -122,11 +123,20 @@ public class GameManager : MonoBehaviour
     {
         direction selecteddirection = direction.NONE;
         var keyboard = Keyboard.current;
-
-        if (keyboard.upArrowKey.wasPressedThisFrame) selecteddirection = direction.UP;
-        else if (keyboard.downArrowKey.wasPressedThisFrame) selecteddirection = direction.DOWN;
-        else if (keyboard.leftArrowKey.wasPressedThisFrame) selecteddirection = direction.LEFT;
-        else if (keyboard.rightArrowKey.wasPressedThisFrame) selecteddirection = direction.RIGHT;
+        // R 重開關卡
+        if (keyboard.rKey.wasPressedThisFrame)
+        {
+            GameManager.Instance.Restart();
+            return;
+        }
+        if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame) 
+            selecteddirection = direction.UP;
+        else if (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame) 
+            selecteddirection = direction.DOWN;
+        else if (keyboard.leftArrowKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame) 
+            selecteddirection = direction.LEFT;
+        else if (keyboard.rightArrowKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame) 
+            selecteddirection = direction.RIGHT;
 
         // 如果玩家按下了有效按鍵
         if (selecteddirection != direction.NONE)
@@ -200,5 +210,10 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("Loser！");
         }
+    }
+    public void Restart()
+    {
+        //是這個方法嗎？不確定
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

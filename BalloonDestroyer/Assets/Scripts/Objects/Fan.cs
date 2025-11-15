@@ -5,10 +5,11 @@ using UnityEngine.Tilemaps;
 using static UnityEngine.GraphicsBuffer;
 
 
-public class fan : MonoBehaviour, IBlower
+public class Fan : MonoBehaviour, IBlower
 {
     [SerializeField]direction direction;
     [SerializeField]int windStrength;
+    bool ONOFF = true;
     public void SetWindStrength(int strength)
     {
         if(windStrength < 0)
@@ -25,6 +26,7 @@ public class fan : MonoBehaviour, IBlower
     public bool PositionIsInfluenced(Vector3 targetpos)
     {
         //Debug.Log("PositionIsInfluenced");
+        if(!ONOFF)return false;
         Vector3 delta = MovementHelper.directionToVector(direction);
         Tilemap tilemap = LevelGenerator.Instance.GetTilemap(TilemapType.ObjectMap);
         Vector3 fanpos = transform.position;
@@ -48,5 +50,9 @@ public class fan : MonoBehaviour, IBlower
     public Vector3 GetPosition()
     {
         return this.transform.position;
+    }
+    public void TurnOff()
+    {
+        ONOFF = false;
     }
 }
