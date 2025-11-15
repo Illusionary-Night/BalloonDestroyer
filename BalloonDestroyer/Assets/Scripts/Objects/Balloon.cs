@@ -23,6 +23,7 @@ public class Balloon : MonoBehaviour, IBlowable
         }
         Vector2 dir = MovementHelper.directionToVector(finalWinddirection);
         if (dir == Vector2.zero) return;
+        if (IsHeadWind(transform.position+(Vector3)dir,dir)) return;
         StartCoroutine(MoveAlongWind(dir));
     }
 
@@ -74,5 +75,12 @@ public class Balloon : MonoBehaviour, IBlowable
     public Vector3 GetPosition()
     {
         return transform.position;
+    }
+
+    public bool IsHeadWind(Vector3 position, Vector2 itsDir)
+    {
+        Vector2 fanDir = MovementHelper.directionToVector(GameManager.Instance.CheckLocalWind(position));
+        if(Vector2.Distance(fanDir+itsDir,Vector2.zero)<0.1)return true;//對沖
+        return false;
     }
 }

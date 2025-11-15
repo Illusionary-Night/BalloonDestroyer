@@ -156,24 +156,13 @@ public class GameManager : MonoBehaviour
         // 迴圈遍歷所有可動物件 (因為已排序，帆船會先動)
         foreach (var obj in movableObjects)
         {
-            direction finalWind = direction.NONE;
             // TODO 加入「風扇覆蓋」的檢查邏輯
             // 檢查這個物件的位置是否在風扇影響範圍內
             // True 則使用風扇的風向覆蓋 finalWind = CalculateWindFor(obj.position, currentWind)
             // False 則使用全域風向
-
-            direction influencedDirection = direction.NONE;
-            //Debug.Log("count Fan: " + blowerObjects.Count);
-            foreach (var blower in blowerObjects)
-            {
-                if (blower.PositionIsInfluenced(obj.GetPosition())) 
-                {
-                    influencedDirection = blower.GetWindDirection();
-                    Debug.Log("changeWind: " + influencedDirection);
-                }
-            }
-
-            if(influencedDirection == direction.NONE) finalWind = currentWind; // 用全域風向
+            direction finalWind = direction.NONE;
+            direction influencedDirection = CheckLocalWind(obj.GetPosition());
+            if ( influencedDirection == direction.NONE) finalWind = currentWind; // 用全域風向
             else finalWind = influencedDirection;
             // 命令物件開始移動
             //Debug.Log("finalWind: " + finalWind);
@@ -215,5 +204,17 @@ public class GameManager : MonoBehaviour
     {
         //是這個方法嗎？不確定
         //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    public direction CheckLocalWind(Vector3 position)
+    {
+        direction influencedDirection = direction.NONE;
+        foreach (var blower in blowerObjects)
+        {
+            if (blower.PositionIsInfluenced(position))
+            {
+                influencedDirection = blower.GetWindDirection();
+            }
+        }
+        return influencedDirection;
     }
 }

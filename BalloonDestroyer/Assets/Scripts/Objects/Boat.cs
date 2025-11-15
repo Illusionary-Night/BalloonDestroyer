@@ -11,6 +11,7 @@ public class Boat : MonoBehaviour, IBlowable
     [SerializeField] LayerMask obstacleMask; // 指定 Rocks, Fans, Boats 所在 Layer
     bool isMoving = false;
     bool isNeedle = false;
+    direction Direction;
     public bool IsMoving() => isMoving;
     public bool IsNeedle() => isNeedle;
     public int GetPriority() => 1;
@@ -20,6 +21,7 @@ public class Boat : MonoBehaviour, IBlowable
     }
     public void StartMove(direction finalWinddirection)
     {
+        Direction = finalWinddirection;
         if (terrainMap == null)
         {
             //terrainMap = GameObject.Find("Water_Map").GetComponent<Tilemap>();
@@ -28,6 +30,7 @@ public class Boat : MonoBehaviour, IBlowable
         if (IsNeedle()) return;
         Vector2 dir = MovementHelper.directionToVector(finalWinddirection);
         if (dir == Vector2.zero) return;
+        if (IsHeadWind(transform.position + (Vector3)dir, dir)) return;
         StartCoroutine(MoveAlongWind(dir));
     }
 
@@ -36,6 +39,11 @@ public class Boat : MonoBehaviour, IBlowable
         isMoving = true;
         while (true)
         {
+            if (dir != (Vector2)MovementHelper.directionToVector(Direction))
+            {
+                isMoving = false;
+                yield break;
+            }
             if (!ConditionMet(dir)) break;
             
             
@@ -83,6 +91,12 @@ public class Boat : MonoBehaviour, IBlowable
     public Vector3 GetPosition()
     {
         return transform.position;
+    }
+    public bool IsHeadWind(Vector3 position, Vector2 itsDir)
+    {
+        Vector2 fanDir = MovementHelper.directionToVector(GameManager.Instance.CheckLocalWind(position));
+        if (Vector2.Distance(fanDir + itsDir, Vector2.zero) < 0.1) return true;//對沖
+        return false;
     }
 }
 
