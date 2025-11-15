@@ -46,6 +46,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b95cd90e82fea9c45a39868d3282ad29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Boat
+  Water_0: {fileID: 6049605792901559095, guid: f5780b9caf0734341873aeedcc43fc0e, type: 3}
+  speed: 0
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!212 &7294410679082283078
 SpriteRenderer:
   m_ObjectHideFlags: 0

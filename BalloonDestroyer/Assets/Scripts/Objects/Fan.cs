@@ -2,7 +2,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 
-public class fan : MonoBehaviour, Iblow
+public class fan : MonoBehaviour
 {
     direction direction;
     Vector2Int position;
