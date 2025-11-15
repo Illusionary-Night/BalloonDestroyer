@@ -18,7 +18,7 @@ public class Balloon : MonoBehaviour, IBlowable
         Direction = finalWinddirection;
         if (isMoving)
         {
-            Debug.Log("isMoving");
+            //Debug.Log("isMoving");
             return;
         }
         Vector2 dir = MovementHelper.directionToVector(finalWinddirection);
@@ -28,7 +28,7 @@ public class Balloon : MonoBehaviour, IBlowable
 
     IEnumerator MoveAlongWind(Vector2 dir)
     {
-        Debug.Log("dir"+dir);
+        //Debug.Log("dir"+dir);
         isMoving = true;
         while (true)
         {
@@ -61,6 +61,7 @@ public class Balloon : MonoBehaviour, IBlowable
             {
                 if (c.GetComponent<Goal>() != null) { GameManager.Instance.EndGame(true); isMoving = false; yield break; }
                 if (c.GetComponent<Needle>() != null) { GameManager.Instance.EndGame(false); isMoving = false; yield break; }
+                if (c.GetComponent<Trigger>() != null) { c.GetComponent<Trigger>().Triggered();  isMoving = false;yield break; }
             }
 
             yield return null;

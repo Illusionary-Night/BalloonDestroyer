@@ -51,6 +51,7 @@ public class Boat : MonoBehaviour, IBlowable
             foreach (var c in cols)
             {
                 if (c.GetComponent<Needle>() != null) { isMoving = false; isNeedle = true; yield break; }
+                if (c.GetComponent<Trigger>() != null) { c.GetComponent<Trigger>().Triggered(); isMoving = false; yield break; }
             }
             yield return null;
         }
