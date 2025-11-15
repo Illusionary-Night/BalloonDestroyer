@@ -41,6 +41,7 @@ public class Balloon : MonoBehaviour, IBlowable
             foreach (var c in cols)
             {
                 if (c.GetComponent<Goal>() != null) { GameManager.Instance.EndGame(true); isMoving = false; yield break; }
+                if (c.GetComponent<Needle>() != null) { GameManager.Instance.EndGame(false); isMoving = false; yield break; }
             }
 
             yield return null;
