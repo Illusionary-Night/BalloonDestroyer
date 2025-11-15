@@ -131,19 +131,17 @@ public class GameManager : MonoBehaviour
             currentWind = selecteddirection; // 記錄風向
             currentState = GameState.ObjectsMoving; // 切換到「物件移動」狀態
         }
+        Move();
     }
 
-    void Move()
+    bool Move()
     {
+        bool didAnyObjectMove = false;
         // 演算階段
         // 迴圈遍歷所有可動物件 (因為已排序，帆船會先動)
         foreach (var obj in movableObjects)
         {
             direction finalWind = direction.NONE;
-            // TODO 加入「風扇覆蓋」的檢查邏輯
-            // 檢查這個物件的位置是否在風扇影響範圍內
-            // True 則使用風扇的風向覆蓋 finalWind = CalculateWindFor(obj.position, currentWind)
-            // False 則使用全域風向
 
             direction influencedDirection = direction.NONE;
             //Debug.Log("count Fan: " + blowerObjects.Count);
@@ -158,23 +156,47 @@ public class GameManager : MonoBehaviour
 
             if(influencedDirection == direction.NONE) finalWind = currentWind; // 用全域風向
             else finalWind = influencedDirection;
+            if (!obj.IsMoving())
+            {
+                obj.StartMove(finalWind);
+            }
             // 命令物件開始移動
-            //Debug.Log("finalWind: " + finalWind);
-            obj.StartMove(finalWind);
+            if (obj.IsMoving())
+            {
+                didAnyObjectMove = true;
+            }
         }
+        return didAnyObjectMove;
     }
 
     void GameLoop()
     {
         // 這是「等待」階段
-        // 每一幀都檢查，是否「所有」物件的 IsMoving() 都回傳 false
-        Move();
 
         bool isAllStopped = movableObjects.All(obj => !obj.IsMoving());
         if (isAllStopped)
         {
             Debug.Log("All objects were stoped, turn to player");
             currentState = GameState.PlayerTurn; // 切換回玩家回合
+        }
+
+        // 如果所有物件都靜止了
+        if (isAllStopped)
+        {
+            // 我們「再次」呼叫 Move()
+            //    這會根據物件「新」的位置，計算風扇覆蓋，並命令它們移動「下一格」
+            bool didAnyObjectStartMoving = Move();
+
+            // 檢查 Move() 的結果
+            //    如果 Move() 回報「沒有任何物件開始移動」
+            //    (代表所有物件都撞牆了，或被風扇停止了，或風向是 NONE)
+            if (!didAnyObjectStartMoving)
+            {
+                // 演算回合結束，切換回玩家
+                Debug.Log("All objects stopped, turn to player");
+                currentState = GameState.PlayerTurn;
+            }
+            // (如果 didAnyObjectStartMoving 是 true，GameLoop 會在下一幀繼續檢查)
         }
 
     }
