@@ -2,15 +2,15 @@
 
 public static class MovementHelper
 {
-    public static Vector2Int directionToVector(direction d)
+    public static Vector3 directionToVector(direction d)
     {
         switch (d)
         {
-            case direction.UP: return Vector2Int.up;
-            case direction.DOWN: return Vector2Int.down;
-            case direction.LEFT: return Vector2Int.left;
-            case direction.RIGHT: return Vector2Int.right;
-            default: return Vector2Int.zero;
+            case direction.UP: return Vector3.up;
+            case direction.DOWN: return Vector3.down;
+            case direction.LEFT: return Vector3.left;
+            case direction.RIGHT: return Vector3.right;
+            default: return Vector3.zero;
         }
     }
 }

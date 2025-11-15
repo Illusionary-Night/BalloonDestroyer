@@ -17,5 +17,5 @@ interface IBlowable
     /// GameManager 呼叫這個來排序 (帆船回傳 1, 氣球回傳 0)
     /// </summary>
     int GetPriority();
-    Vector2Int GetPosition();
+    Vector3 GetPosition();
 }

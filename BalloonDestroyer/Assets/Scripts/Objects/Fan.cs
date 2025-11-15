@@ -1,6 +1,8 @@
+using NUnit.Framework.Constraints;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using static UnityEngine.GraphicsBuffer;
 
 
 public class fan : MonoBehaviour, IBlower
@@ -20,19 +22,19 @@ public class fan : MonoBehaviour, IBlower
     {
         return windStrength;
     }
-    public bool PositionIsInfluenced(Vector2Int targetpos)
+    public bool PositionIsInfluenced(Vector3 targetpos)
     {
-        Debug.Log("PositionIsInfluenced");
-        Vector2Int delta = MovementHelper.directionToVector(direction);
+        //Debug.Log("PositionIsInfluenced");
+        Vector3 delta = MovementHelper.directionToVector(direction);
         Tilemap tilemap = LevelGenerator.Instance.GetTilemap(TilemapType.ObjectMap);
-        Vector2Int fanpos = (Vector2Int)tilemap.WorldToCell(transform.position);
-        Vector2Int tmppos = new Vector2Int();
+        Vector3 fanpos = transform.position;
+        Vector3 tmppos = new Vector3();
         tmppos = fanpos;
         for(int i =1; i <= windStrength; i++)
         {
             tmppos += delta;
-            print("tmp: "+tmppos+"tar: "+targetpos);
-            if (tmppos==targetpos)
+            //print("tmp: "+tmppos+"tar: "+targetpos);
+            if (Vector3.Distance(tmppos, targetpos) <= 0.3)
             {
                 return true;
             }
@@ -43,10 +45,8 @@ public class fan : MonoBehaviour, IBlower
     {
         return direction;
     }
-    public Vector2Int GetPosition()
+    public Vector3 GetPosition()
     {
-        Tilemap tilemap = LevelGenerator.Instance.GetTilemap(TilemapType.ObjectMap);
-        Vector2Int pos = (Vector2Int)tilemap.WorldToCell(transform.position);
-        return pos;
+        return this.transform.position;
     }
 }

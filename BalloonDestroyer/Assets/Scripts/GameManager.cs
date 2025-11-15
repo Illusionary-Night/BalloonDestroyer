@@ -146,8 +146,7 @@ public class GameManager : MonoBehaviour
             // False 則使用全域風向
 
             direction influencedDirection = direction.NONE;
-            Tilemap tilemap = LevelGenerator.Instance.GetTilemap(TilemapType.ObjectMap);
-            Debug.Log("count Fan: " + blowerObjects.Count);
+            //Debug.Log("count Fan: " + blowerObjects.Count);
             foreach (var blower in blowerObjects)
             {
                 if (blower.PositionIsInfluenced(obj.GetPosition())) 
@@ -160,6 +159,7 @@ public class GameManager : MonoBehaviour
             if(influencedDirection == direction.NONE) finalWind = currentWind; // 用全域風向
             else finalWind = influencedDirection;
             // 命令物件開始移動
+            //Debug.Log("finalWind: " + finalWind);
             obj.StartMove(finalWind);
         }
     }
