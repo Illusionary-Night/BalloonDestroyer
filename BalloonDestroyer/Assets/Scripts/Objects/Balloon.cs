@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class Balloon : MonoBehaviour, IBlowable
@@ -46,4 +47,12 @@ public class Balloon : MonoBehaviour, IBlowable
 
     public bool IsMoving() => isMoving;
     public int GetPriority() => 0; // 氣球優先度 0
+    public Vector2Int GetPosition()
+    {
+        Debug.Log("BalloonV3: " + transform.position);
+        Tilemap tilemap = LevelGenerator.Instance.GetTilemap(TilemapType.ObjectMap);
+        Vector2Int pos = (Vector2Int)tilemap.WorldToCell(transform.position);
+        Debug.Log("BalloonV2INT: " + pos);
+        return pos;
+    }
 }

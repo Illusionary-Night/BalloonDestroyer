@@ -5,8 +5,8 @@ using UnityEngine.Tilemaps;
 
 public class fan : MonoBehaviour, IBlower
 {
-    direction direction;
-    int windStrength;
+    [SerializeField]direction direction;
+    [SerializeField]int windStrength;
     public void SetWindStrength(int strength)
     {
         if(windStrength < 0)
@@ -20,25 +20,33 @@ public class fan : MonoBehaviour, IBlower
     {
         return windStrength;
     }
-    public bool PositionIsInfluenced(Vector2 targetpos)
+    public bool PositionIsInfluenced(Vector2Int targetpos)
     {
-        //Vector2Int delta = MovementHelper.directionToVector(direction);
-        //Vector2 fanpos = LevelGenerator.Instance.GetMapData(TilemapType.ObjectMap)[0,0].WorldToCell(transform.position);
-        //Vector2 tmppos = new Vector2();
-        //tmppos = fanpos;
-        //for(int i =1; i < windStrength; i++)
-        //{
-        //    tmppos += delta;
-        //    if (tmppos==targetpos)
-        //    {
-        //        return true;
-        //    }
-        //}
+        Debug.Log("PositionIsInfluenced");
+        Vector2Int delta = MovementHelper.directionToVector(direction);
+        Tilemap tilemap = LevelGenerator.Instance.GetTilemap(TilemapType.ObjectMap);
+        Vector2Int fanpos = (Vector2Int)tilemap.WorldToCell(transform.position);
+        Vector2Int tmppos = new Vector2Int();
+        tmppos = fanpos;
+        for(int i =1; i <= windStrength; i++)
+        {
+            tmppos += delta;
+            print("tmp: "+tmppos+"tar: "+targetpos);
+            if (tmppos==targetpos)
+            {
+                return true;
+            }
+        }
         return false;
     }
     public direction GetWindDirection()
     {
         return direction;
     }
-
+    public Vector2Int GetPosition()
+    {
+        Tilemap tilemap = LevelGenerator.Instance.GetTilemap(TilemapType.ObjectMap);
+        Vector2Int pos = (Vector2Int)tilemap.WorldToCell(transform.position);
+        return pos;
+    }
 }

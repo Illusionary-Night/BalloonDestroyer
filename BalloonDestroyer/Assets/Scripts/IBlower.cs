@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-
 interface IBlower
 {
     void SetWindStrength(int strength);
     int GetWindStrength();
-    bool PositionIsInfluenced(Vector2 pos);
+    Vector2Int GetPosition();
+    bool PositionIsInfluenced(Vector2Int pos);
     direction GetWindDirection();
 }
