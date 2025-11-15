@@ -810,7 +810,7 @@ GameObject:
   - component: {fileID: 1240095698861228425}
   - component: {fileID: 4006531295845313961}
   - component: {fileID: 5977114642781677703}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Water_Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
