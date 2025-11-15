@@ -314,7 +314,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e3251e359e5d844fa284a5d107e89bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelGenerator
-  debug_TestLevelPrefab: {fileID: 0}
+  debug_TestLevelPrefab: {fileID: 4374556451175672933, guid: 3f5dd5e8b6db5134dbc6a91c7e299240, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
