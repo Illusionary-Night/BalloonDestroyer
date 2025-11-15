@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 
-interface IBlowable
+interface IBlower
 {
     /// <summary>
     /// GameManager 呼叫這個來命令物件根據風向開始移動

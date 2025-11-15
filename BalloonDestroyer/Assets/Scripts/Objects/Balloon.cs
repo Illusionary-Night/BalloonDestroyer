@@ -8,10 +8,10 @@ public class Balloon : MonoBehaviour, IBlowable
     [SerializeField] LayerMask obstacleMask; // 指定 Rocks, Fans, Boats 所在 Layer
     bool isMoving = false;
 
-    public void StartMove(direction finalWindDirection)
+    public void StartMove(direction finalWinddirection)
     {
         if (isMoving) return;
-        Vector2 dir = MovementHelper.DirectionToVector(finalWindDirection);
+        Vector2 dir = MovementHelper.directionToVector(finalWinddirection);
         if (dir == Vector2.zero) return;
         StartCoroutine(MoveAlongWind(dir));
     }

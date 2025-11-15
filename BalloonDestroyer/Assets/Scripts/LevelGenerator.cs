@@ -1,10 +1,18 @@
-﻿using UnityEngine;
+﻿using Unity.VisualScripting;
+using UnityEngine;
 using UnityEngine.Tilemaps;
+using static UnityEditor.PlayerSettings;
 
 /// <summary>
 /// 專門負責載入關卡 Prefab。
 /// (現在使用 Prefab Tile，這個腳本不再需要手動生成物件)
 /// </summary>
+public enum TilemapType
+{
+    ObjectMap,
+    ObstacleMap,
+    TerrainMap
+}
 public class LevelGenerator : MonoBehaviour
 {
     [Header("Level Manager Hook (Debug)")]
@@ -42,5 +50,41 @@ public class LevelGenerator : MonoBehaviour
 
         // 如果找不到 LevelManager，則使用我們設定的「測試用 Prefab」
         return debug_TestLevelPrefab;
+    }
+    public Tilemap GetTilemap(string mapName)
+    {
+        var level = GetLevelPrefabFromLevelManager();
+        if (level == null)
+        {
+            Debug.LogError("Level prefab not found!");
+            return null;
+        }
+
+        var tilemap = level.transform.Find(mapName)?.GetComponent<Tilemap>();
+        if (tilemap == null)
+        {
+            Debug.LogError(mapName+" tilemap not found!");
+        }
+        return tilemap;
+    }
+    public TileBase[,] GetMapData(TilemapType tilemap)
+    {
+
+        BoundsInt bounds = tilemap.cellBounds;
+
+        int w = bounds.size.x;
+        int h = bounds.size.y;
+
+        TileBase[,] map = new TileBase[w, h];
+
+        for (int x = 0; x < w; x++)
+        {
+            for (int y = 0; y < h; y++)
+            {
+                Vector2Int pos = new Vector3Int(bounds.x + x, bounds.y + y, 0);
+                map[x, y] = tilemap.GetTile(pos);
+            }
+        }
+        return map;
     }
 }

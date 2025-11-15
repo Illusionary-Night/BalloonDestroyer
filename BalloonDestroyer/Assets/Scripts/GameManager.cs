@@ -112,18 +112,18 @@ public class GameManager : MonoBehaviour
 
     void GetKey()
     {
-        direction selectedDirection = direction.NONE;
+        direction selecteddirection = direction.NONE;
         var keyboard = Keyboard.current;
 
-        if (keyboard.upArrowKey.wasPressedThisFrame) selectedDirection = direction.UP;
-        else if (keyboard.downArrowKey.wasPressedThisFrame) selectedDirection = direction.DOWN;
-        else if (keyboard.leftArrowKey.wasPressedThisFrame) selectedDirection = direction.LEFT;
-        else if (keyboard.rightArrowKey.wasPressedThisFrame) selectedDirection = direction.RIGHT;
+        if (keyboard.upArrowKey.wasPressedThisFrame) selecteddirection = direction.UP;
+        else if (keyboard.downArrowKey.wasPressedThisFrame) selecteddirection = direction.DOWN;
+        else if (keyboard.leftArrowKey.wasPressedThisFrame) selecteddirection = direction.LEFT;
+        else if (keyboard.rightArrowKey.wasPressedThisFrame) selecteddirection = direction.RIGHT;
 
         // 如果玩家按下了有效按鍵
-        if (selectedDirection != direction.NONE)
+        if (selecteddirection != direction.NONE)
         {
-            currentWind = selectedDirection; // 記錄風向
+            currentWind = selecteddirection; // 記錄風向
             currentState = GameState.ObjectsMoving; // 切換到「物件移動」狀態
         }
     }
@@ -134,6 +134,7 @@ public class GameManager : MonoBehaviour
         // 迴圈遍歷所有可動物件 (因為已排序，帆船會先動)
         foreach (var obj in movableObjects)
         {
+            foreach(var)
             // TODO 加入「風扇覆蓋」的檢查邏輯
             // 檢查這個物件的位置是否在風扇影響範圍內
             // True 則使用風扇的風向覆蓋 finalWind = CalculateWindFor(obj.position, currentWind)

@@ -2,7 +2,7 @@
 
 public static class MovementHelper
 {
-    public static Vector2 DirectionToVector(direction d)
+    public static Vector2 directionToVector(direction d)
     {
         switch (d)
         {
