@@ -1,5 +1,6 @@
 ﻿using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.TerrainUtils;
 using UnityEngine.Tilemaps;
 using static UnityEditor.PlayerSettings;
 
@@ -18,7 +19,7 @@ public class LevelGenerator : MonoBehaviour
     [Header("Level Manager Hook (Debug)")]
     [Tooltip("【僅供測試用】請拖曳一個「關卡 Prefab」(Level_01.prefab)。")]
     public GameObject debug_TestLevelPrefab; // (這就是接孔)
-
+    public static LevelGenerator Instance { get; private set; }
     /// <summary>
     /// GameManager 呼叫這個函式來執行關卡生成
     /// </summary>
@@ -41,7 +42,18 @@ public class LevelGenerator : MonoBehaviour
         Debug.Log("關卡 Prefab 已生成。");
         return true; // 生成成功
     }
-
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject); 
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(this.gameObject); // 切換場景時不銷毀
+        }
+    }
 
     // --- 【這是您的接孔】 ---
     private GameObject GetLevelPrefabFromLevelManager()
@@ -51,25 +63,36 @@ public class LevelGenerator : MonoBehaviour
         // 如果找不到 LevelManager，則使用我們設定的「測試用 Prefab」
         return debug_TestLevelPrefab;
     }
-    public Tilemap GetTilemap(string mapName)
+    public Tilemap GetTilemap(TilemapType tileType)
     {
         var level = GetLevelPrefabFromLevelManager();
+        Tilemap tilemap = null;
         if (level == null)
         {
             Debug.LogError("Level prefab not found!");
             return null;
         }
-
-        var tilemap = level.transform.Find(mapName)?.GetComponent<Tilemap>();
+        switch (tileType)
+        {
+            case TilemapType.ObjectMap:
+                tilemap = level.transform.Find("Object_Map")?.GetComponent<Tilemap>();
+                break;
+            case TilemapType.ObstacleMap:
+                tilemap = level.transform.Find("Obstacle_Map")?.GetComponent<Tilemap>();
+                break;
+            case TilemapType.TerrainMap:
+                tilemap = level.transform.Find("Terrain_Map")?.GetComponent<Tilemap>();
+                break;
+        }
         if (tilemap == null)
         {
-            Debug.LogError(mapName+" tilemap not found!");
+            Debug.LogError("tilemap not found!");
         }
         return tilemap;
     }
-    public TileBase[,] GetMapData(TilemapType tilemap)
+    public TileBase[,] GetMapData(TilemapType tileType)
     {
-
+        Tilemap tilemap = GetTilemap(tileType);
         BoundsInt bounds = tilemap.cellBounds;
 
         int w = bounds.size.x;
@@ -81,7 +104,7 @@ public class LevelGenerator : MonoBehaviour
         {
             for (int y = 0; y < h; y++)
             {
-                Vector2Int pos = new Vector3Int(bounds.x + x, bounds.y + y, 0);
+                Vector3Int pos = new Vector3Int(bounds.x + x, bounds.y + y, 0);
                 map[x, y] = tilemap.GetTile(pos);
             }
         }
