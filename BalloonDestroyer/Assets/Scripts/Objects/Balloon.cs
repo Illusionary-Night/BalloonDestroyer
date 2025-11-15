@@ -4,13 +4,23 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class Balloon : MonoBehaviour, IBlowable
 {
+    private Collider2D myCollider;
     [SerializeField] float speed = 3f;
     [SerializeField] LayerMask obstacleMask; // 指定 Rocks, Fans, Boats 所在 Layer
     bool isMoving = false;
-
-    public void StartMove(direction finalWinddirection)
+    direction Direction;
+    private void Awake()
     {
-        if (isMoving) return;
+        myCollider = GetComponent<Collider2D>();  // 取得自己的 Collider2D
+    }
+    public void StartMove(direction finalWinddirection)
+    {        
+        Direction = finalWinddirection;
+        if (isMoving)
+        {
+            Debug.Log("isMoving");
+            return;
+        }
         Vector2 dir = MovementHelper.directionToVector(finalWinddirection);
         if (dir == Vector2.zero) return;
         StartCoroutine(MoveAlongWind(dir));
@@ -22,19 +32,28 @@ public class Balloon : MonoBehaviour, IBlowable
         isMoving = true;
         while (true)
         {
-
+            if (dir != (Vector2)MovementHelper.directionToVector(Direction))
+            {
+                isMoving =  false;
+                yield break;
+            }
             // 檢查前方一格是否被阻擋
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 1f, obstacleMask);
-            if (hit.collider != null) break;
+            RaycastHit2D hit = Physics2D.Raycast(transform.position + (Vector3)dir, (Vector3)dir, 0.2f, obstacleMask);
+            if (hit.collider != null && hit.collider != myCollider)
+            {
+                // 打到別的東西（不是自己），才當作被擋住
+                // Debug.Log("Boat blocked by: " + hit.collider.name);
+                break;
+            }
 
             Vector3 target = transform.position + (Vector3)dir;
-            Debug.Log("while start");
+            //Debug.Log("while start");
             while ((transform.position - target).sqrMagnitude > 0.0001f)
             {
                 transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
                 yield return null;
             }
-            Debug.Log("while end");
+            //Debug.Log("while end");
             transform.position = target;
             // 抵達該格後檢查是否碰到 Goal
             Collider2D[] cols = Physics2D.OverlapPointAll(transform.position);
