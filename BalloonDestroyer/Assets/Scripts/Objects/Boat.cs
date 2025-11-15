@@ -11,12 +11,16 @@ public class Boat : MonoBehaviour, IBlowable
     [SerializeField] LayerMask obstacleMask; // 指定 Rocks, Fans, Boats 所在 Layer
     bool isMoving = false;
 
-    public bool IsMoving() => false;
+    public bool IsMoving() => isMoving;
     public int GetPriority() => 1;
 
     public void StartMove(direction finalWinddirection)
     {
-        if (isMoving) return;
+        if (terrainMap == null)
+        {
+            terrainMap = GameObject.Find("Terrain_Map").GetComponent<Tilemap>();
+        }
+        if (IsMoving()) return;
         Vector2 dir = MovementHelper.directionToVector(finalWinddirection);
         if (dir == Vector2.zero) return;
         StartCoroutine(MoveAlongWind(dir));
@@ -27,10 +31,6 @@ public class Boat : MonoBehaviour, IBlowable
         isMoving = true;
         while (true)
         {
-            if (terrainMap == null)
-            {
-                terrainMap = GameObject.Find("TerrainMap").GetComponent<Tilemap>();
-            }
             Sprite WhatIsAtForward = terrainMap.GetSprite(terrainMap.WorldToCell(transform.position + new Vector3(dir.x, dir.y, 0)));
             if (WhatIsAtForward != Water_0) break;
             // 檢查前方一格是否被阻擋
