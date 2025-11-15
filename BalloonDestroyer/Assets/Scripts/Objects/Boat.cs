@@ -2,7 +2,7 @@
 using UnityEngine;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
-public class Balloon : MonoBehaviour, IBlowable
+public class Boat : MonoBehaviour, IBlowable
 {
     [SerializeField] float speed = 3f;
     [SerializeField] LayerMask obstacleMask; // 指定 Rocks, Fans, Boats 所在 Layer
@@ -21,7 +21,7 @@ public class Balloon : MonoBehaviour, IBlowable
         isMoving = true;
         while (true)
         {
-            Sprite WhatIsAtForward = tilemap.WorldToCell(tilemap.GetSprite(transform.position + new Vector3(dir.x, dir.y, 0)));
+            Sprite WhatIsAtForward = tilemap.GetSprite(tilemap.WorldToCell(transform.position + new Vector3(dir.x, dir.y, 0)));
             if (WhatIsAtForward != Water_0) break;
             // 檢查前方一格是否被阻擋
             RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 1f, obstacleMask);
