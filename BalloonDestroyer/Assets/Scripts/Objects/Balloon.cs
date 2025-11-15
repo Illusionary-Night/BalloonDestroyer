@@ -18,19 +18,23 @@ public class Balloon : MonoBehaviour, IBlowable
 
     IEnumerator MoveAlongWind(Vector2 dir)
     {
+        Debug.Log("dir"+dir);
         isMoving = true;
         while (true)
         {
+
             // 檢查前方一格是否被阻擋
             RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 1f, obstacleMask);
             if (hit.collider != null) break;
 
             Vector3 target = transform.position + (Vector3)dir;
+            Debug.Log("while start");
             while ((transform.position - target).sqrMagnitude > 0.0001f)
             {
                 transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
                 yield return null;
             }
+            Debug.Log("while end");
             transform.position = target;
             // 抵達該格後檢查是否碰到 Goal
             Collider2D[] cols = Physics2D.OverlapPointAll(transform.position);
@@ -47,4 +51,8 @@ public class Balloon : MonoBehaviour, IBlowable
 
     public bool IsMoving() => isMoving;
     public int GetPriority() => 0; // 氣球優先度 0
+    public Vector3 GetPosition()
+    {
+        return transform.position;
+    }
 }
