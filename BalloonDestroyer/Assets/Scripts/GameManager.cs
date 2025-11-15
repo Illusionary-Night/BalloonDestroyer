@@ -37,6 +37,8 @@ public class GameManager : MonoBehaviour
     public GameState currentState;
     private List<IBlowable> movableObjects = new List<IBlowable>(); // 儲存所有可動物件
     private direction currentWind = direction.NONE; // 玩家選擇的風向
+    private direction nextWind = direction.NONE; // 玩家選擇的下一個風向
+
 
     private List<IBlower> blowerObjects = new List<IBlower>(); // 儲存所有可吹物件
 
@@ -65,11 +67,12 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        GetKey();
         // 根據不同的遊戲狀態，執行不同的任務
         switch (currentState)
         {
             case GameState.PlayerTurn:
-                GetKey(); // 玩家回合：偵測按鍵
+                ChangeWind(); // 玩家回合：偵測按鍵
                 break;
 
             case GameState.ObjectsMoving:
@@ -128,9 +131,13 @@ public class GameManager : MonoBehaviour
         // 如果玩家按下了有效按鍵
         if (selecteddirection != direction.NONE)
         {
-            currentWind = selecteddirection; // 記錄風向
-            currentState = GameState.ObjectsMoving; // 切換到「物件移動」狀態
+            nextWind = selecteddirection; // 記錄風向
         }
+    }
+    void ChangeWind()
+    {
+        currentWind = nextWind;
+        currentState = GameState.ObjectsMoving; // 切換到「物件移動」狀態
     }
 
     void Move()
