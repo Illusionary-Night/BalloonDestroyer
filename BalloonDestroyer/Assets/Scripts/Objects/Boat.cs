@@ -36,18 +36,8 @@ public class Boat : MonoBehaviour, IBlowable
         while (true)
         {
             if (!CondiconditionMet(dir)) break;
-            Sprite WhatIsAtForward = terrainMap.GetSprite(terrainMap.WorldToCell(transform.position + new Vector3(dir.x, dir.y, 0)));
-            if (WhatIsAtForward != Water_0) break;
-            // 檢查前方一格是否被阻擋
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 1f, obstacleMask);
-
-            if (hit.collider != null && hit.collider != myCollider)
-            {
-                // 打到別的東西（不是自己），才當作被擋住
-                // Debug.Log("Boat blocked by: " + hit.collider.name);
-                break;
-            }
-
+            
+            
             Vector3 target = transform.position + (Vector3)dir;
             while ((transform.position - target).sqrMagnitude > 0.0001f)
             {
@@ -60,15 +50,22 @@ public class Boat : MonoBehaviour, IBlowable
         }
         isMoving = false;
     }
-    private bool CondiconditionMet(direction dir)
+    private bool CondiconditionMet(Vector2 dir)
     {
         Tilemap tilemap = LevelGenerator.Instance.GetTilemap(TilemapType.WaterMap);
-        Vector3Int tarPos = tilemap.WorldToCell(transform.position + MovementHelper.directionToVector(dir));
+        Vector3Int tarPos = tilemap.WorldToCell(transform.position + (Vector3)dir);
         TileBase[,] tileBase = LevelGenerator.Instance.GetMapData(TilemapType.WaterMap);
         if (tileBase[tarPos.x,tarPos.y] == null)return false;
         // 檢查前方一格是否被阻擋
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, (Vector2)MovementHelper.directionToVector(dir), 1f, obstacleMask);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, (Vector3)dir, 1f, obstacleMask);
         if (hit.collider != null) return false;
+        if (hit.collider != null && hit.collider != myCollider)
+        {
+            // 打到別的東西（不是自己），才當作被擋住
+            // Debug.Log("Boat blocked by: " + hit.collider.name);
+            return false;
+        }
+
         return true;
     }
     public Vector3 GetPosition()
