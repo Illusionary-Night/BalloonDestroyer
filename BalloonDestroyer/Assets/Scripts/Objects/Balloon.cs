@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class Balloon : MonoBehaviour, IBlowable
 {
@@ -30,7 +31,7 @@ public class Balloon : MonoBehaviour, IBlowable
                 transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
                 yield return null;
             }
-
+            transform.position = target;
             // 抵達該格後檢查是否碰到 Goal
             Collider2D[] cols = Physics2D.OverlapPointAll(transform.position);
             foreach (var c in cols)

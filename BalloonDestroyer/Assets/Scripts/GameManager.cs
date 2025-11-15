@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections.Generic; // 【新增】為了使用 List
-using System.Linq; // 【新增】為了使用 .All() 和 .OrderBy()
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.InputSystem;
 
 
@@ -30,19 +30,32 @@ public enum GameState
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-    public Terrain[,] TerrainMap = new Terrain[10, 10];
+
+    private LevelGenerator levelGenerator;
 
     public GameState currentState;
     private List<IBlowable> movableObjects = new List<IBlowable>(); // 儲存所有可動物件
     private direction currentWind = direction.NONE; // 玩家選擇的風向
 
-    // --- 填入您的函式 ---
 
-    void Awake() // (Start 執行前會先執行 Awake)
+
+    void Awake()
     {
-        Instance = this; // 設定單例
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject); // 確保只有一個 GameManager 存在
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(this.gameObject); // 切換場景時不銷毀
+        }
+        levelGenerator = GetComponent<LevelGenerator>();
+        if (levelGenerator == null)
+        {
+            Debug.LogError("GameManager can't find \"LevelGenerator\" Component！Please mount LevelGenerator.cs onto the same object.");
+        }
     }
-
     void Start()
     {
         Initialize();
@@ -69,7 +82,23 @@ public class GameManager : MonoBehaviour
 
     void Initialize() // 您的 Initialize
     {
-        // TODO 載入關卡編輯器的 Tilemap
+        // 載入關卡編輯器的 Tilemap
+        if (levelGenerator == null)
+        {
+            currentState = GameState.GameEnd; // 缺少 LevelGenerator，凍結遊戲
+            return;
+        }
+
+        // 委託 LevelGenerator 載入並生成關卡
+        bool didGenerate = levelGenerator.LoadAndGenerateLevel();
+
+        if (!didGenerate)
+        {
+            Debug.LogError("Level generate Fail!");
+            currentState = GameState.GameEnd; // 生成失敗，凍結遊戲
+            return;
+        }
+
 
         // 找場上所有實作了 Iblow 介面的物件儲存起來
         movableObjects = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).OfType<IBlowable>().ToList();
