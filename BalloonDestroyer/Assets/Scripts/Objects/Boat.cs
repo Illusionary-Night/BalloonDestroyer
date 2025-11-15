@@ -31,12 +31,7 @@ public class Boat : MonoBehaviour, IBlowable
         isMoving = true;
         while (true)
         {
-            Sprite WhatIsAtForward = terrainMap.GetSprite(terrainMap.WorldToCell(transform.position + new Vector3(dir.x, dir.y, 0)));
-            if (WhatIsAtForward != Water_0) break;
-            // 檢查前方一格是否被阻擋
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 1f, obstacleMask);
-            if (hit.collider != null) break;
-
+            if (!CondiconditionMet(dir)) break;
             Vector3 target = transform.position + (Vector3)dir;
             while ((transform.position - target).sqrMagnitude > 0.0001f)
             {
@@ -49,6 +44,17 @@ public class Boat : MonoBehaviour, IBlowable
         }
         isMoving = false;
     }
-
-
+    private bool CondiconditionMet(Vector2 dir)
+    {
+        Sprite WhatIsAtForward = terrainMap.GetSprite(terrainMap.WorldToCell(transform.position + new Vector3(dir.x, dir.y, 0)));
+        if (WhatIsAtForward != Water_0) return false;
+        // 檢查前方一格是否被阻擋
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 1f, obstacleMask);
+        if (hit.collider != null) return false;
+        return true;
+    }
+    public Vector3 GetPosition()
+    {
+        return transform.position;
+    }
 }
