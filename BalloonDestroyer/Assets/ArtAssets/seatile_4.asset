@@ -12,9 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13b75c95f34a00d4e8c04f76b73312e6, type: 3}
   m_Name: seatile_4
   m_EditorClassIdentifier: Unity.2D.Tilemap.Extras::UnityEngine.Tilemaps.AnimatedTile
-  m_AnimatedSprites: []
-  m_MinSpeed: 1
-  m_MaxSpeed: 1
+  m_AnimatedSprites:
+  - {fileID: -1440676305, guid: c4a754bef015d9648a624a10bea5cbce, type: 3}
+  - {fileID: 712582160, guid: c4a754bef015d9648a624a10bea5cbce, type: 3}
+  - {fileID: -1995602406, guid: c4a754bef015d9648a624a10bea5cbce, type: 3}
+  - {fileID: -931890553, guid: c4a754bef015d9648a624a10bea5cbce, type: 3}
+  - {fileID: -1338404342, guid: c4a754bef015d9648a624a10bea5cbce, type: 3}
+  - {fileID: 1318944029, guid: c4a754bef015d9648a624a10bea5cbce, type: 3}
+  m_MinSpeed: 5
+  m_MaxSpeed: 5
   m_AnimationStartTime: 0
   m_AnimationStartFrame: 0
   m_TileColliderType: 0
