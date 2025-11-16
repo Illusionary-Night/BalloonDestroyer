@@ -194,10 +194,12 @@ public class GameManager : MonoBehaviour
         if (didWin)
         {
             Debug.Log("Win！");
+            SceneManager.LoadScene("WinScene");
         }
         else
         {
             Debug.Log("Loser！");
+            SceneManager.LoadScene("LoseScene");
         }
     }
     public void Restart()

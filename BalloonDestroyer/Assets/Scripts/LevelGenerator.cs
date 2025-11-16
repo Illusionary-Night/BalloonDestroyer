@@ -21,27 +21,26 @@ public class LevelGenerator : MonoBehaviour
     [Tooltip("【僅供測試用】請拖曳一個「關卡 Prefab」(Level_01.prefab)。")]
     public GameObject debug_TestLevelPrefab; // (這就是接孔)
     public static LevelGenerator Instance { get; private set; }
+    private GameObject spawnedLevelRoot;
     /// <summary>
     /// GameManager 呼叫這個函式來執行關卡生成
     /// </summary>
     public bool LoadAndGenerateLevel()
     {
-        // 取得要載入的關卡 Prefab (未來由 LevelManager 提供)
         GameObject levelPrefabToLoad = GetLevelPrefabFromLevelManager();
-
         if (levelPrefabToLoad == null)
         {
-            Debug.LogError("沒有指定要載入的關卡 Prefab！(請檢查 LevelManager 或 debug_TestLevelPrefab 欄位)");
-            return false; // 生成失敗
+            Debug.LogError("沒有指定要載入的關卡 Prefab！");
+            return false;
         }
 
-        // 生成關卡物件 (它會包含 Grid 和所有 Tilemaps)
-        // 【重要】當這個 Prefab 被生成時 (Instantiate)，
-        // 所有被繪製在 Tilemap 上的 "Prefab Tile" 都會自動執行它們的生成邏輯。
-        Instantiate(levelPrefabToLoad, Vector3.zero, Quaternion.identity);
+        // 清除舊關卡 (可選)
+        if (spawnedLevelRoot != null)
+            Destroy(spawnedLevelRoot);
 
+        spawnedLevelRoot = Instantiate(levelPrefabToLoad, Vector3.zero, Quaternion.identity);
         Debug.Log("關卡 Prefab 已生成。");
-        return true; // 生成成功
+        return true;
     }
     void Awake()
     {
@@ -60,8 +59,13 @@ public class LevelGenerator : MonoBehaviour
     private GameObject GetLevelPrefabFromLevelManager()
     {
         // TODO 嘗試尋找您寫的 LevelManager
+        if (LevelManager.Instance != null)
+        {
+            GameObject prefab = LevelManager.Instance.GetSelectedLevelPrefab();
+            if (prefab != null) return prefab;
+        }
 
-        // 如果找不到 LevelManager，則使用我們設定的「測試用 Prefab」
+        // 無選擇關卡時 fallback 使用測試用 prefab
         return debug_TestLevelPrefab;
     }
     public Tilemap GetTilemap(TilemapType tileType)
