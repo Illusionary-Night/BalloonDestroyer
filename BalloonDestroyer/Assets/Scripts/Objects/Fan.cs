@@ -1,15 +1,27 @@
-using NUnit.Framework.Constraints;
+﻿using NUnit.Framework.Constraints;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
 
 
 public class Fan : MonoBehaviour, IBlower
 {
     [SerializeField]direction direction;
-    [SerializeField]int windStrength;
+    [SerializeField] int windStrength;
+    private Animator[] allAnimators;
+
     bool ONOFF = true;
+
+    private void Awake()
+    {
+        allAnimators = GetComponentsInChildren<Animator>();
+        if (allAnimators == null || allAnimators.Length == 0)
+        {
+            Debug.LogWarning("在 " + gameObject.name + " 及其子物件上找不到任何 Animator 元件！");
+        }
+    }
     public void SetWindStrength(int strength)
     {
         if(windStrength < 0)
@@ -54,5 +66,9 @@ public class Fan : MonoBehaviour, IBlower
     public void TurnOff()
     {
         ONOFF = false;
+        foreach (var animator in allAnimators)
+        {
+            if (animator != null) animator.speed = 0;
+        }
     }
 }
