@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class LoadScene : MonoBehaviour
 {
+    //public static GameObject tmpLevelPrefab = null;
     public void LoadTitleScene()
     {
         SceneManager.LoadScene("TitleScene");
@@ -29,4 +30,16 @@ public class LoadScene : MonoBehaviour
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
     }
+    //public void Retry()
+    //{
+    //    GameObject levelPrefab = LevelManager.Instance.GetSelectedLevelPrefab();
+    //    LevelManager.Instance.SelectLevelAndLoadGame(levelPrefab);
+    //}
+    //public void Next()
+    //{
+    //    Debug.Log("Next");
+    //    GameObject nowLevelPrefab = LevelManager.Instance.GetSelectedLevelPrefab();
+    //    GameObject nextLevelPrefab = LevelManager.Instance.nextLevel(nowLevelPrefab);
+    //    LevelManager.Instance.SelectLevelAndLoadGame(nextLevelPrefab);
+    //}
 }

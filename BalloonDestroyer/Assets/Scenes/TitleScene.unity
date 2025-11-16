@@ -1019,6 +1019,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da09adc83677fea4baf5ae6d50e797f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelManager
+  AllLevel:
+  - {fileID: 4374556451175672933, guid: 3f5dd5e8b6db5134dbc6a91c7e299240, type: 3}
+  - {fileID: 4374556451175672933, guid: a59c6d80e4c28004ebca13de95e28767, type: 3}
 --- !u!212 &1870458167
 SpriteRenderer:
   m_ObjectHideFlags: 0
