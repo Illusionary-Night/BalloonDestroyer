@@ -32,13 +32,15 @@ public enum GameState
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-
+    public Balloon CurrentBalloon { get; private set; }
+    private GameObject balloonPrefab;
     private LevelGenerator levelGenerator;
 
     public GameState currentState;
     private List<IBlowable> movableObjects = new List<IBlowable>(); // 儲存所有可動物件
     private direction currentWind = direction.NONE; // 玩家選擇的風向
     private direction nextWind = direction.NONE; // 玩家選擇的下一個風向
+
 
 
     private List<IBlower> blowerObjects = new List<IBlower>(); // 儲存所有可吹物件
@@ -68,6 +70,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+
         GetKey();
         // 根據不同的遊戲狀態，執行不同的任務
         switch (currentState)
@@ -242,4 +245,9 @@ public class GameManager : MonoBehaviour
         }
         return influencedDirection;
     }
+    public void RegisterBalloon(Balloon balloon)
+    {
+        CurrentBalloon = balloon;
+    }
 }
+

@@ -12,7 +12,12 @@ public class Balloon : MonoBehaviour, IBlowable
     private void Awake()
     {
         myCollider = GetComponent<Collider2D>();  // 取得自己的 Collider2D
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.RegisterBalloon(this);
+        }
     }
+
     public void StartMove(direction finalWinddirection)
     {        
         Direction = finalWinddirection;
