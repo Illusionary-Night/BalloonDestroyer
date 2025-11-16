@@ -202,9 +202,32 @@ public class GameManager : MonoBehaviour
     }
     public void Restart()
     {
-        //是這個方法嗎？不確定
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        StopAllCoroutines();
+        ResetState();
+
+        SceneManager.sceneLoaded += OnSceneReloaded;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+
+    private void OnSceneReloaded(Scene scene, LoadSceneMode mode)
+    {
+        SceneManager.sceneLoaded -= OnSceneReloaded;
+        Initialize(); // <--- 重新生成地圖!
+    }
+
+    public void ResetState()
+    {
+        currentWind = direction.NONE;
+        nextWind = direction.NONE;
+
+        movableObjects.Clear();
+        blowerObjects.Clear();
+
+        currentState = GameState.PlayerTurn;
+    }
+
+
+
     public direction CheckLocalWind(Vector3 position)
     {
         direction influencedDirection = direction.NONE;
