@@ -2763,7 +2763,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19db12231dfe6f04f86ba8dc483b75e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelSelectButton
-  levelPrefab: {fileID: 4374556451175672933, guid: a59c6d80e4c28004ebca13de95e28767, type: 3}
+  levelPrefab: {fileID: 7109359354314036988, guid: eebdb96167b8784498bbf9e8c783aab5, type: 3}
 --- !u!114 &1892542420
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -59,18 +59,18 @@ Tilemap:
       m_TileSpriteIndex: 0
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
-      m_TileObjectToInstantiateIndex: 65535
+      m_TileObjectToInstantiateIndex: 1
       dummyAlignment: 0
       m_AllTileFlags: 1073741825
   m_AnimatedTiles: {}
   m_TileAssetArray:
   - m_RefCount: 1
-    m_Data: {fileID: 11400000, guid: 70f724ac9b3484844b64cce76757c696, type: 2}
+    m_Data: {fileID: 11400000, guid: 45a2c63ae022d734db165a4bb4fec21c, type: 2}
   - m_RefCount: 1
     m_Data: {fileID: 11400000, guid: 93fab15dfe45e434c92811b3705b0856, type: 2}
   m_TileSpriteArray:
   - m_RefCount: 1
-    m_Data: {fileID: 21300000, guid: 5b9d977b85862fe4b93974f40cb38fda, type: 3}
+    m_Data: {fileID: 21300000, guid: 2986c07f43b77d74b9ee187fb57e8f79, type: 3}
   - m_RefCount: 1
     m_Data: {fileID: 21300000, guid: 1eaab420746bd8f4c9eba2c9e2c989c4, type: 3}
   m_TileMatrixArray:
@@ -98,6 +98,8 @@ Tilemap:
   m_TileObjectToInstantiateArray:
   - m_RefCount: 1
     m_Data: {fileID: 5861286143445805031, guid: 37b4daebc577e0442ba9731a31978e56, type: 3}
+  - m_RefCount: 1
+    m_Data: {fileID: 743255501075277543, guid: 0a20d129f0fe33843acfc0ac2faea92a, type: 3}
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Origin: {x: -5, y: -7, z: 0}
@@ -2641,7 +2643,7 @@ GameObject:
   - component: {fileID: 1256213823698947000}
   - component: {fileID: 3791471288243135889}
   - component: {fileID: 677096600183460442}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Water_Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3298,7 +3300,7 @@ Tilemap:
       - {fileID: 1034398278, guid: c4a754bef015d9648a624a10bea5cbce, type: 3}
       - {fileID: -273723192, guid: c4a754bef015d9648a624a10bea5cbce, type: 3}
       - {fileID: 1881253169, guid: c4a754bef015d9648a624a10bea5cbce, type: 3}
-      m_AnimationSpeed: 5
+      m_AnimationSpeed: 5.0000005
       m_AnimationTimeOffset: 0
       m_Flags: 0
   - first: {x: 6, y: -7, z: 0}
@@ -3610,7 +3612,7 @@ Tilemap:
       - {fileID: -931890553, guid: c4a754bef015d9648a624a10bea5cbce, type: 3}
       - {fileID: -1338404342, guid: c4a754bef015d9648a624a10bea5cbce, type: 3}
       - {fileID: 1318944029, guid: c4a754bef015d9648a624a10bea5cbce, type: 3}
-      m_AnimationSpeed: 5.0000005
+      m_AnimationSpeed: 5
       m_AnimationTimeOffset: 0
       m_Flags: 0
   - first: {x: 4, y: -1, z: 0}
@@ -4088,7 +4090,8 @@ GameObject:
   - component: {fileID: 2973438690511847160}
   - component: {fileID: 6971667828832745074}
   - component: {fileID: 6510370369599989078}
-  m_Layer: 0
+  - component: {fileID: 5792443213179079844}
+  m_Layer: 3
   m_Name: Obstacle_Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5003,6 +5006,44 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+--- !u!19719996 &5792443213179079844
+TilemapCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6139281900245399840}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_MaximumTileChangeCount: 1000
+  m_ExtrusionFactor: 0
+  m_UseDelaunayMesh: 0
 --- !u!1 &6536399224075283078
 GameObject:
   m_ObjectHideFlags: 0
@@ -5162,7 +5203,7 @@ GameObject:
   - component: {fileID: 5421320477523946660}
   - component: {fileID: 340966721258143666}
   - component: {fileID: 320971694969583272}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Terrain_Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6758,7 +6799,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3114811111399064204
 Transform:
   m_ObjectHideFlags: 0
@@ -7165,6 +7206,10 @@ PrefabInstance:
     - target: {fileID: 5759448613333569547, guid: 6700d322345e91c4f9b36a1ecfd02ff7, type: 3}
       propertyPath: m_Name
       value: Neddle
+      objectReference: {fileID: 0}
+    - target: {fileID: 5759448613333569547, guid: 6700d322345e91c4f9b36a1ecfd02ff7, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
