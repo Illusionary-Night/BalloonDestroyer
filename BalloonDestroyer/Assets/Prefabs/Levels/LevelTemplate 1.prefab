@@ -1055,7 +1055,7 @@ GameObject:
   - component: {fileID: 8851674792130355460}
   - component: {fileID: 7680873758111547556}
   m_Layer: 0
-  m_Name: LevelTemplate
+  m_Name: LevelTemplate 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
