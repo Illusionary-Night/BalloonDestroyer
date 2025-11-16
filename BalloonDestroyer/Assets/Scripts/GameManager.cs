@@ -32,13 +32,15 @@ public enum GameState
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-
+    public Balloon CurrentBalloon { get; private set; }
+    private GameObject balloonPrefab;
     private LevelGenerator levelGenerator;
 
     public GameState currentState;
     private List<IBlowable> movableObjects = new List<IBlowable>(); // 儲存所有可動物件
     private direction currentWind = direction.NONE; // 玩家選擇的風向
     private direction nextWind = direction.NONE; // 玩家選擇的下一個風向
+
 
 
     private List<IBlower> blowerObjects = new List<IBlower>(); // 儲存所有可吹物件
@@ -53,7 +55,7 @@ public class GameManager : MonoBehaviour
         else
         {
             Instance = this;
-            DontDestroyOnLoad(this.gameObject); // 切換場景時不銷毀
+            //DontDestroyOnLoad(this.gameObject); // 切換場景時不銷毀
         }
         levelGenerator = GetComponent<LevelGenerator>();
         if (levelGenerator == null)
@@ -61,13 +63,14 @@ public class GameManager : MonoBehaviour
             Debug.LogError("GameManager can't find \"LevelGenerator\" Component！Please mount LevelGenerator.cs onto the same object.");
         }
     }
-    void Start()
+    private void Start()
     {
         Initialize();
     }
 
     void Update()
     {
+
         GetKey();
         // 根據不同的遊戲狀態，執行不同的任務
         switch (currentState)
@@ -86,7 +89,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void Initialize() // 您的 Initialize
+    public void Initialize() // 您的 Initialize
     {
         // 載入關卡編輯器的 Tilemap
         if (levelGenerator == null)
@@ -194,17 +197,42 @@ public class GameManager : MonoBehaviour
         if (didWin)
         {
             Debug.Log("Win！");
+            SceneManager.LoadScene("WinScene");
         }
         else
         {
             Debug.Log("Loser！");
+            SceneManager.LoadScene("LoseScene");
         }
     }
     public void Restart()
     {
-        //是這個方法嗎？不確定
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        StopAllCoroutines();
+        ResetState();
+
+        SceneManager.sceneLoaded += OnSceneReloaded;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+
+    private void OnSceneReloaded(Scene scene, LoadSceneMode mode)
+    {
+        SceneManager.sceneLoaded -= OnSceneReloaded;
+        Initialize(); // <--- 重新生成地圖!
+    }
+
+    public void ResetState()
+    {
+        currentWind = direction.NONE;
+        nextWind = direction.NONE;
+
+        movableObjects.Clear();
+        blowerObjects.Clear();
+
+        currentState = GameState.PlayerTurn;
+    }
+
+
+
     public direction CheckLocalWind(Vector3 position)
     {
         direction influencedDirection = direction.NONE;
@@ -217,4 +245,9 @@ public class GameManager : MonoBehaviour
         }
         return influencedDirection;
     }
+    public void RegisterBalloon(Balloon balloon)
+    {
+        CurrentBalloon = balloon;
+    }
 }
+
