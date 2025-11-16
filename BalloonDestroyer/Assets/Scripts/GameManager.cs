@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 
 
 public enum Terrain
@@ -37,6 +38,8 @@ public class GameManager : MonoBehaviour
     public GameState currentState;
     private List<IBlowable> movableObjects = new List<IBlowable>(); // 儲存所有可動物件
     private direction currentWind = direction.NONE; // 玩家選擇的風向
+    private direction nextWind = direction.NONE; // 玩家選擇的下一個風向
+
 
     private List<IBlower> blowerObjects = new List<IBlower>(); // 儲存所有可吹物件
 
@@ -65,11 +68,12 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        GetKey();
         // 根據不同的遊戲狀態，執行不同的任務
         switch (currentState)
         {
             case GameState.PlayerTurn:
-                GetKey(); // 玩家回合：偵測按鍵
+                ChangeWind(); // 玩家回合：偵測按鍵
                 break;
 
             case GameState.ObjectsMoving:
@@ -119,84 +123,64 @@ public class GameManager : MonoBehaviour
     {
         direction selecteddirection = direction.NONE;
         var keyboard = Keyboard.current;
-
-        if (keyboard.upArrowKey.wasPressedThisFrame) selecteddirection = direction.UP;
-        else if (keyboard.downArrowKey.wasPressedThisFrame) selecteddirection = direction.DOWN;
-        else if (keyboard.leftArrowKey.wasPressedThisFrame) selecteddirection = direction.LEFT;
-        else if (keyboard.rightArrowKey.wasPressedThisFrame) selecteddirection = direction.RIGHT;
+        // R 重開關卡
+        if (keyboard.rKey.wasPressedThisFrame)
+        {
+            GameManager.Instance.Restart();
+            return;
+        }
+        if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame) 
+            selecteddirection = direction.UP;
+        else if (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame) 
+            selecteddirection = direction.DOWN;
+        else if (keyboard.leftArrowKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame) 
+            selecteddirection = direction.LEFT;
+        else if (keyboard.rightArrowKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame) 
+            selecteddirection = direction.RIGHT;
 
         // 如果玩家按下了有效按鍵
         if (selecteddirection != direction.NONE)
         {
-            currentWind = selecteddirection; // 記錄風向
-            currentState = GameState.ObjectsMoving; // 切換到「物件移動」狀態
+            nextWind = selecteddirection; // 記錄風向
         }
-        Move();
+    }
+    void ChangeWind()
+    {
+        currentWind = nextWind;
+        currentState = GameState.ObjectsMoving; // 切換到「物件移動」狀態
     }
 
-    bool Move()
+    void Move()
     {
-        bool didAnyObjectMove = false;
         // 演算階段
         // 迴圈遍歷所有可動物件 (因為已排序，帆船會先動)
         foreach (var obj in movableObjects)
         {
+            // TODO 加入「風扇覆蓋」的檢查邏輯
+            // 檢查這個物件的位置是否在風扇影響範圍內
+            // True 則使用風扇的風向覆蓋 finalWind = CalculateWindFor(obj.position, currentWind)
+            // False 則使用全域風向
             direction finalWind = direction.NONE;
-
-            direction influencedDirection = direction.NONE;
-            //Debug.Log("count Fan: " + blowerObjects.Count);
-            foreach (var blower in blowerObjects)
-            {
-                if (blower.PositionIsInfluenced(obj.GetPosition())) 
-                {
-                    influencedDirection = blower.GetWindDirection();
-                    Debug.Log("changeWind: " + influencedDirection);
-                }
-            }
-
-            if(influencedDirection == direction.NONE) finalWind = currentWind; // 用全域風向
+            direction influencedDirection = CheckLocalWind(obj.GetPosition());
+            if ( influencedDirection == direction.NONE) finalWind = currentWind; // 用全域風向
             else finalWind = influencedDirection;
-            if (!obj.IsMoving())
-            {
-                obj.StartMove(finalWind);
-            }
             // 命令物件開始移動
-            if (obj.IsMoving())
-            {
-                didAnyObjectMove = true;
-            }
+            //Debug.Log("finalWind: " + finalWind);
+            obj.StartMove(finalWind);
         }
-        return didAnyObjectMove;
     }
 
     void GameLoop()
     {
         // 這是「等待」階段
+        // 每一幀都檢查，是否「所有」物件的 IsMoving() 都回傳 false
+        Move();
 
         bool isAllStopped = movableObjects.All(obj => !obj.IsMoving());
         if (isAllStopped)
         {
             Debug.Log("All objects were stoped, turn to player");
             currentState = GameState.PlayerTurn; // 切換回玩家回合
-        }
-
-        // 如果所有物件都靜止了
-        if (isAllStopped)
-        {
-            // 我們「再次」呼叫 Move()
-            //    這會根據物件「新」的位置，計算風扇覆蓋，並命令它們移動「下一格」
-            bool didAnyObjectStartMoving = Move();
-
-            // 檢查 Move() 的結果
-            //    如果 Move() 回報「沒有任何物件開始移動」
-            //    (代表所有物件都撞牆了，或被風扇停止了，或風向是 NONE)
-            if (!didAnyObjectStartMoving)
-            {
-                // 演算回合結束，切換回玩家
-                Debug.Log("All objects stopped, turn to player");
-                currentState = GameState.PlayerTurn;
-            }
-            // (如果 didAnyObjectStartMoving 是 true，GameLoop 會在下一幀繼續檢查)
         }
 
     }
@@ -215,5 +199,22 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("Loser！");
         }
+    }
+    public void Restart()
+    {
+        //是這個方法嗎？不確定
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    public direction CheckLocalWind(Vector3 position)
+    {
+        direction influencedDirection = direction.NONE;
+        foreach (var blower in blowerObjects)
+        {
+            if (blower.PositionIsInfluenced(position))
+            {
+                influencedDirection = blower.GetWindDirection();
+            }
+        }
+        return influencedDirection;
     }
 }
