@@ -5,7 +5,7 @@ public class LevelSelectButton : MonoBehaviour
 {
     public GameObject levelPrefab;
 
-    void Start()
+    void Awake()
     {
         GetComponent<Button>().onClick.AddListener(() =>
         {

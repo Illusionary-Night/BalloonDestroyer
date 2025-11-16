@@ -11,7 +11,8 @@ public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance { get; private set; }
     [SerializeField] List<GameObject> AllLevel;
-    private static GameObject selectedLevelPrefab;
+    private GameObject selectedLevelPrefab;
+    [SerializeField] string selectedLevelName;
 
     void Awake()
     {
@@ -32,7 +33,9 @@ public class LevelManager : MonoBehaviour
     // <param name="levelPrefab">要載入的關卡 Prefab (例如 Level_01.prefab)</param>
     public void SelectLevelAndLoadGame(GameObject levelPrefab)
     {
+        Debug.Log("LoadLevel");
         selectedLevelPrefab = levelPrefab;
+        selectedLevelName = selectedLevelPrefab.name;
         SceneManager.LoadScene("GameScene");
     }
 

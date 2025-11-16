@@ -51,7 +51,7 @@ public class LevelGenerator : MonoBehaviour
         else
         {
             Instance = this;
-            DontDestroyOnLoad(this.gameObject); // 切換場景時不銷毀
+            //DontDestroyOnLoad(this.gameObject); // 切換場景時不銷毀
         }
     }
 
@@ -64,9 +64,10 @@ public class LevelGenerator : MonoBehaviour
             GameObject prefab = LevelManager.Instance.GetSelectedLevelPrefab();
             if (prefab != null) return prefab;
         }
+        return null;
 
         // 無選擇關卡時 fallback 使用測試用 prefab
-        return debug_TestLevelPrefab;
+        //return debug_TestLevelPrefab;
     }
     public Tilemap GetTilemap(TilemapType tileType)
     {

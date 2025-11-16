@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour
         else
         {
             Instance = this;
-            DontDestroyOnLoad(this.gameObject); // 切換場景時不銷毀
+            //DontDestroyOnLoad(this.gameObject); // 切換場景時不銷毀
         }
         levelGenerator = GetComponent<LevelGenerator>();
         if (levelGenerator == null)
@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
             Debug.LogError("GameManager can't find \"LevelGenerator\" Component！Please mount LevelGenerator.cs onto the same object.");
         }
     }
-    void Start()
+    private void Start()
     {
         Initialize();
     }
@@ -86,7 +86,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void Initialize() // 您的 Initialize
+    public void Initialize() // 您的 Initialize
     {
         // 載入關卡編輯器的 Tilemap
         if (levelGenerator == null)
